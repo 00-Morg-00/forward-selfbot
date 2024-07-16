@@ -22,7 +22,7 @@ The Forward Selfbot enables users to send embeds and custom emojis. This tool is
 
 This selfbot will only work for those who can send forward messages, and this can also be fixed by Discord.
 
-![Like this](https://ru.pinterest.com/3072c4a8-68be-4d72-a0ea-26254db1eccb)
+![Like this](https://i.pinimg.com/originals/07/a1/6b/07a16b401abdacf3162938e41c156982.png)
 
 ### Usage
 
