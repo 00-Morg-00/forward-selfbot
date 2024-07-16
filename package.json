@@ -1,0 +1,12 @@
+{
+  "name": "discord-forward-feature-selfbot",
+  "version": "1.0.0",
+  "description": "Using the new Discord feature, you can send emojis and embeds",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Morg",
+  "license": "ISC"
+}
