@@ -41,6 +41,7 @@ async function sendforward(message, datatosend) {
   await axios.post(hooklink, datatosend);
   const msgs = await axios.get(`${discord_api}channels/${channelid}/messages?limit=1`, {headers});
   await axios.delete(`${discord_api}channels/${message.channel.id}/messages/${message.id}`, {headers});
+  await new Promise(resolve => setTimeout(resolve, message.channel.rateLimitPerUser * 1000));
   await axios.post(
       `${discord_api}channels/${message.channel.id}/messages`,
       {
