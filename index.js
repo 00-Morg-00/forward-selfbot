@@ -21,7 +21,7 @@ const headers = {
 
 const randint = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
-const pattern = /^(?!<):(.*?):/g;
+const pattern = /(?<!<):(.*?):/g;
 
 const replaceEmojis = (text) => {
   const matches = (text.match(pattern) || []).map(str => str.replace(/:/g, ''));
