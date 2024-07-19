@@ -21,7 +21,7 @@ const headers = {
 
 const randint = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
-const pattern = /:(.*?):/g;
+const pattern = /^(?!<):(.*?):/g;
 
 const replaceEmojis = (text) => {
   const matches = (text.match(pattern) || []).map(str => str.replace(/:/g, ''));
@@ -29,6 +29,7 @@ const replaceEmojis = (text) => {
 
   matches.forEach(emoj => {
     const emoji = client.emojis.cache.find(emoji => emoji.name === emoj);
+    if (!emoji) return;
     text = text.replace(`:${emoj}:`, `<${emoji.animated ? 'a' : ''}꞉${emoji.name}꞉${emoji.id}>`);
   });
 
