@@ -4,15 +4,15 @@ const axios = require('axios');
 
 const TOKEN = process.env.TOKEN;
 const prefix = process.env.PREFIX;
-const serverid = process.env.SERVER_ID;
-const channelid = process.env.CHANNEL_ID;
 const hooklink = process.env.WEBHOOK_URL;
+
+let guild_id;
 
 
 const client = new Client({ checkUpdate: false });
 
 
-const discord_api = 'https://discord.com/api/v9/';
+const discord_api = 'https://discord.com/api/v9';
 const agent_data = '{"os":"Windows","browser":"Chrome","device":"","system_locale":"ru-RU","browser_user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36","browser_version":"126.0.0.0","os_version":"10","referrer":"","referring_domain":"","referrer_current":"","referring_domain_current":"","release_channel":"stable","client_build_number":309515,"client_event_source":null}'
 const headers = {
     Authorization: TOKEN,
@@ -39,32 +39,38 @@ const replaceEmojis = (text) => {
 
 async function sendforward(message, datatosend) {
 
-  await axios.post(hooklink, datatosend);
-  const msgs = await axios.get(`${discord_api}channels/${channelid}/messages?limit=1`, {headers});
-  await axios.delete(`${discord_api}channels/${message.channel.id}/messages/${message.id}`, {headers});
-  await new Promise(resolve => setTimeout(resolve, message.channel.rateLimitPerUser * 1000));
-  await axios.post(
-      `${discord_api}channels/${message.channel.id}/messages`,
+  const {data: msg} = await axios.post(hooklink+'?wait=true', datatosend);
+  
+  await delay(message.channel.rateLimitPerUser * 1000);    
+
+  axios.post(
+      `${discord_api}/channels/${message.channel.id}/messages`,
       {
         flags: 4096,
         message_reference: {
-          guild_id: serverid,
-          channel_id: channelid,
-          message_id: msgs.data[0].id,
+          guild_id: guild_id,
+          channel_id: msg.channel_id,
+          message_id: msg.id,
           type: 1
         },
       },
       {headers}
     )
-    .then(response => {
-      console.log(response.data, response.status);
-    })
     .catch(error => {
-      console.error(error);
-    });
+      console.log(error);
+  });
+  await axios.delete(`${discord_api}/channels/${message.channel.id}/messages/${message.id}`, {headers});
+
 };
 
-client.once("ready", () => { 
+client.once("ready", async () => { 
+  try{
+    const {data: hook} = await axios.get(hooklink);
+    guild_id = hook.guild_id;
+  } catch (e) {
+    console.error('Webhook does not exist or has been deleted');
+    process.abort();
+  }
   console.log(`Logged in as ${client.user.username}!`);
 });
 
